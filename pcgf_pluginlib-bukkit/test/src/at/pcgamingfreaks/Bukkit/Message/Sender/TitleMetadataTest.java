@@ -17,30 +17,24 @@
 
 package at.pcgamingfreaks.Bukkit.Message.Sender;
 
-import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Message.Sender.TitleLocation;
 import at.pcgamingfreaks.Message.Sender.TitleMetadata;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
-import at.pcgamingfreaks.TestClasses.TestObjects;
-
 import org.bukkit.Bukkit;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class })
 public class TitleMetadataTest
 {
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
+		if (Bukkit.getServer() == null) {
+			Bukkit.setServer(new TestBukkitServer());
+		}
+		//TestObjects.initNMSReflection();
 	}
 
 	@Test

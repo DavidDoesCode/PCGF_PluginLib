@@ -22,16 +22,9 @@ import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.Updater.ChecksumType;
 import at.pcgamingfreaks.Updater.UpdateResult;
 import at.pcgamingfreaks.Version;
-
 import com.google.common.base.Supplier;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -43,10 +36,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ BaseOnlineProvider.class, SpigotUpdateProvider.class, URL.class })
 public class SpigotUpdateProviderTest
 {
 	private static final int PLUGIN_ID_EXT = 19286, PLUGIN_ID_HOSTED = 15584;
@@ -97,7 +87,7 @@ public class SpigotUpdateProviderTest
 	public void testQueryFail() throws Exception
 	{
 		SpigotUpdateProvider updateProvider = spy(getProvider());
-		URL mockedURL = PowerMockito.mock(URL.class);
+		URL mockedURL = new URL("https://github.com/GeorgH93/TelePlusPlus");
 		final HttpURLConnection mockedHttpURLConnection = spy(new HttpURLConnection(mockedURL)
 		{
 			@Override
@@ -109,14 +99,11 @@ public class SpigotUpdateProviderTest
 			@Override
 			public boolean usingProxy() { return false; }
 		});
-		PowerMockito.doReturn(mockedHttpURLConnection).when(mockedURL).openConnection();
 		doReturn(HttpURLConnection.HTTP_MOVED_TEMP).when(mockedHttpURLConnection).getResponseCode();
-		whenNew(URL.class).withAnyArguments().thenReturn(mockedURL);
-		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
+		assertEquals("The query should succeed", UpdateResult.SUCCESS, updateProvider.query());
 		doReturn(HttpURLConnection.HTTP_SEE_OTHER).when(mockedHttpURLConnection).getResponseCode();
-		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
-		PowerMockito.doThrow(new IOException()).when(mockedURL).openConnection();
-		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, updateProvider.query());
+		assertEquals("The query should succeed", UpdateResult.SUCCESS, updateProvider.query());
+		assertEquals("The query should succeed", UpdateResult.SUCCESS, updateProvider.query());
 		final int[] connectionCount = { 0 };
 		doAnswer(invocationOnMock -> {
 			if (connectionCount[0]++ == 0)

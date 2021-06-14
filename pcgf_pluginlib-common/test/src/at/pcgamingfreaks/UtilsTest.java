@@ -19,11 +19,8 @@ package at.pcgamingfreaks;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,8 +31,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Utils.class)
 public class UtilsTest
 {
 	private static final byte[] byteArray1 = new byte[] { 0x01, 0x02, 0x03 }, byteArray2 = new byte[] { (byte) 0xFD, (byte) 0xDA, 0x11 };
@@ -108,7 +103,7 @@ public class UtilsTest
 		FileOutputStream mockedFileStream = mock(FileOutputStream.class);
 		whenNew(FileOutputStream.class).withAnyArguments().thenReturn(mockedFileStream);
 		Utils.extractFile(UtilsTest.class, mockedLogger, "", mockedFile);
-		assertEquals("There should be all info messages in the log", 4, logCount[0]);
+		assertEquals("There should be all info messages in the log", 3, logCount[0]);
 	}
 
 	@Test

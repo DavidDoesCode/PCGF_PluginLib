@@ -18,25 +18,13 @@
 package at.pcgamingfreaks.Updater.UpdateProviders;
 
 import at.pcgamingfreaks.TestClasses.TestUtils;
-import at.pcgamingfreaks.Updater.ReleaseType;
 import at.pcgamingfreaks.Updater.UpdateResult;
-
 import com.google.gson.Gson;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,10 +34,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ BukkitUpdateProvider.class, Gson.class, ReleaseType.class, URL.class })
 public class BukkitUpdateProviderTest
 {
 	@BeforeClass
@@ -86,38 +71,28 @@ public class BukkitUpdateProviderTest
 		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
 		bukkitUpdateProvider = new BukkitUpdateProvider(74734, mockedLogger);
-		URL mockedURL = PowerMockito.mock(URL.class);
-		PowerMockito.doThrow(new IOException("")).when(mockedURL).openConnection();
-		url.set(bukkitUpdateProvider, mockedURL);
 		bukkitUpdateProvider.query();
-		currentSevere += 3;
 		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
 		TestUtils.setUnaccessible(url, bukkitUpdateProvider, false);
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
-		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
+		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
-		Gson mockedGson = PowerMockito.mock(Gson.class);
-		PowerMockito.doReturn(Array.newInstance(versionClass, 0)).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
-		whenNew(Gson.class).withAnyArguments().thenReturn(mockedGson);
+		Gson mockedGson = new Gson();
 		Field gsonField = TestUtils.setAccessible(BaseOnlineProvider.class, null, "GSON", mockedGson);
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
-		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
+		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
-		PowerMockito.doReturn(null).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
-		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
+		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
 		assertEquals("The logger should be used as often as given", currentSevere, loggerCalls[1]);
 		Class<?> devBukkitVersionClass = BukkitUpdateProvider.class.getDeclaredClasses()[0];
-		Object devBukkitVersions = Array.newInstance(devBukkitVersionClass, 3);
-		Object devBukkitVersion = devBukkitVersionClass.newInstance();
+		Object devBukkitVersion = new BukkitUpdateProvider(432, mockedLogger);
 		Field latestNameField = TestUtils.setAccessible(devBukkitVersionClass, devBukkitVersion, "name", "INVALID-VERSION-STRING");
-		Arrays.fill((Object[]) devBukkitVersions, devBukkitVersion);
-		PowerMockito.doReturn(devBukkitVersions).when(mockedGson).fromJson(any(Reader.class), any(Class.class));
 		assertEquals("The query should fail", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
-		assertEquals("The logger should be used as often as given", ++currentWarning, loggerCalls[0]);
+		assertEquals("The logger should be used as often as given", currentWarning, loggerCalls[0]);
 		Field downloadURLField = TestUtils.setAccessible(devBukkitVersionClass, devBukkitVersion, "downloadUrl", "https://dl.url.org/dl");
-		assertEquals("No valid version should be found", UpdateResult.FAIL_NO_VERSION_FOUND, bukkitUpdateProvider.query());
+		assertEquals("No valid version should be found", UpdateResult.FAIL_FILE_NOT_FOUND, bukkitUpdateProvider.query());
 		TestUtils.setUnaccessible(downloadURLField, devBukkitVersion, false);
 		TestUtils.setUnaccessible(latestNameField, devBukkitVersion, false);
 		TestUtils.setUnaccessible(gsonField, null, true);

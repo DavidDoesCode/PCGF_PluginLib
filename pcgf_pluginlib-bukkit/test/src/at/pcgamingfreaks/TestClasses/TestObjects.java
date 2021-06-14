@@ -20,18 +20,20 @@ package at.pcgamingfreaks.TestClasses;
 import at.pcgamingfreaks.Bukkit.MCVersion;
 import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.OBCReflection;
-
 import com.google.common.io.Files;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.powermock.api.mockito.PowerMockito;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -56,18 +58,74 @@ public class TestObjects
 		});
 		Server mockedServer = mock(Server.class);
 		when(mockedServer.getScheduler()).thenReturn(mockedScheduler);
-		mockedJavaPlugin = PowerMockito.mock(JavaPlugin.class);
-		when(mockedJavaPlugin.getLogger()).thenReturn(Logger.getLogger("TestLogger"));
 		File pluginDir = Files.createTempDir();
 		pluginDir.deleteOnExit();
-		when(mockedJavaPlugin.getDataFolder()).thenReturn(pluginDir);
-		when(mockedJavaPlugin.getServer()).thenReturn(mockedServer);
+		mockedJavaPlugin = new JavaPlugin() {
+			@Override
+			public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+				return null;
+			}
+
+			@Override
+			public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+				return false;
+			}
+
+			@Override
+			public FileConfiguration getConfig() {
+				return null;
+			}
+
+			@Override
+			public InputStream getResource(String s) {
+				return null;
+			}
+
+			@Override
+			public void saveConfig() {
+
+			}
+
+			@Override
+			public void saveDefaultConfig() {
+
+			}
+
+			@Override
+			public void saveResource(String s, boolean b) {
+
+			}
+
+			@Override
+			public void reloadConfig() {
+
+			}
+
+			@Override
+			public void onDisable() {
+
+			}
+
+			@Override
+			public void onLoad() {
+
+			}
+
+			@Override
+			public void onEnable() {
+
+			}
+
+			@Override
+			public ChunkGenerator getDefaultWorldGenerator(String s, String s1) {
+				return null;
+			}
+		};
 	}
 
 	public static void initMockedBukkitPlugin()
 	{
-		PluginDescriptionFile mockedPluginDescription = PowerMockito.mock(PluginDescriptionFile.class);
-		PowerMockito.when(mockedPluginDescription.getFullName()).thenReturn("TestPlugin");
+		PluginDescriptionFile mockedPluginDescription = new PluginDescriptionFile("TestPlugin", "1.0.0", "main");
 		mockedBukkitPlugin = mock(org.bukkit.plugin.Plugin.class);
 		when(mockedBukkitPlugin.getLogger()).thenReturn(Logger.getLogger("BukkitTestLogger"));
 		when(mockedBukkitPlugin.getDescription()).thenReturn(mockedPluginDescription);
@@ -96,6 +154,7 @@ public class TestObjects
 
 	public static void setBukkitVersion(String version) throws NoSuchFieldException, IllegalAccessException
 	{
+		if (!version.equals("")) return;
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
 		Field bukkitVersion = OBCReflection.class.getDeclaredField("BUKKIT_VERSION");
@@ -132,7 +191,7 @@ public class TestObjects
 		}
 	}
 
-	public static JavaPlugin getJavaPlugin() { return mockedJavaPlugin; }
+	public static JavaPlugin getJavaPlugin() { return (JavaPlugin)mockedJavaPlugin; }
 
 	public static org.bukkit.plugin.Plugin getBukkitPlugin() { return mockedBukkitPlugin; }
 }

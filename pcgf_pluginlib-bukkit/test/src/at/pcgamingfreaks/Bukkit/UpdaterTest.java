@@ -24,19 +24,14 @@ import at.pcgamingfreaks.Updater.UpdateProviders.BukkitUpdateProvider;
 import at.pcgamingfreaks.Updater.UpdateProviders.NotSuccessfullyQueriedException;
 import at.pcgamingfreaks.Updater.UpdateProviders.RequestTypeNotAvailableException;
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.*;
 import org.junit.internal.runners.statements.FailOnTimeout;
 import org.junit.rules.Timeout;
 import org.junit.runner.Description;
-import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 import org.mockito.stubbing.Answer;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -48,8 +43,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Bukkit.class, JavaPlugin.class, PluginDescriptionFile.class, Thread.class })
 public class UpdaterTest
 {
 	private static final File PLUGINS_FOLDER = new File("plugins"), TARGET_FILE = new File(PLUGINS_FOLDER, "updates" + File.separator + "MM.jar");
@@ -78,8 +71,10 @@ public class UpdaterTest
 		//noinspection ResultOfMethodCallIgnored
 		updateFolder.mkdirs();
 
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
+		if (Bukkit.getServer() == null) {
+			Bukkit.setServer(new TestBukkitServer());
+		}
+		//TestObjects.initNMSReflection();
 		TestObjects.setBukkitVersion("1_8_R1");
 	}
 

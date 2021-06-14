@@ -18,31 +18,19 @@
 package at.pcgamingfreaks.Bukkit.Particles;
 
 import at.pcgamingfreaks.Bukkit.MCVersion;
-
 import org.bukkit.material.MaterialData;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.stubbing.Answer;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.powermock.api.mockito.PowerMockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ MCVersion.class })
 public class ParticleTest
 {
 	@BeforeClass
 	public static void prepareTestData() throws Exception
 	{
 		final int[] counter = { 0 };
-		mockStatic(MCVersion.class);
-		doAnswer((Answer<Boolean>) invocationOnMock -> ++counter[0] >= 36 && counter[0] < 45).when(MCVersion.class, "isNewerOrEqualThan", any());
-		doReturn(true).when(MCVersion.class, "isOlderThan", any());
 	}
 
 	@Test

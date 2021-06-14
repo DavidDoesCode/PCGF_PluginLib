@@ -20,7 +20,7 @@ and provides cross version support for a lot of Minecraft features
 ## Features:
 ### Bukkit + BungeeCord:
 * Config/Language file handler
-    * File upgrade support (copy old values in new file)
+    * File upgrade support (copy old values into a new file)
     * Comment support
 * UUID converter
   * Supports Name -> UUID, UUID -> Name or UUID -> Name changes
@@ -44,7 +44,7 @@ and provides cross version support for a lot of Minecraft features
 * Particles handler
 * Item-Stack serializer
 * Material name resolver
-* Late registerable commands
+* Late registrable commands
 
 ## Plugins using it:
 * [Marriage Master](https://www.spigotmc.org/resources/19273/) (V2.0 and newer)
@@ -82,7 +82,7 @@ The library can be added in two ways to your plugin.
 Add `PCGF_PluginLib` as a dependency for your Bukkit/Spigot or BungeeCord plugin.
 The users will have to install the library as a plugin. Download: [https://ci.pcgamingfreaks.at/job/PluginLib/][ci]
 
-### Shading the library into your plugin with maven:
+### Shading the library into your plugin with Maven:
 By adding the library to your plugin through shading it will require more memory (if multiple plugins using the library are installed) and some features (DB connection sharing, translation sharing) will not be available.
 The recommended shading settings:
 ```xml

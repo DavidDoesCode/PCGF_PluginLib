@@ -15,11 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package at.pcgamingfreaks.TestClasses;
+package net.minecraft.server.TestBukkitServer;
 
-public class FakeTestBukkitServer
+public enum TestEnum
 {
-	private String serverField = "fakeServer";
-
-	public String getVersion() { return "null"; }
+	Value1,
+	Value2
 }

@@ -17,57 +17,35 @@
 
 package at.pcgamingfreaks.Bukkit;
 
-import at.pcgamingfreaks.TestClasses.FakeTestBukkitServer;
+//import at.pcgamingfreaks.TestClasses.FakeTestBukkitServer;
 
-import org.junit.BeforeClass;
+import org.bukkit.craftbukkit.unknown.FakeTestBukkitServer;
 import org.junit.Test;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class OBCReflectionTest
-{
-	@BeforeClass
-	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
-	{
-		Field modifiersField = Field.class.getDeclaredField("modifiers");
-		modifiersField.setAccessible(true);
-		Field obcClassPathField = OBCReflection.class.getDeclaredField("OBC_CLASS_PATH");
-		obcClassPathField.setAccessible(true);
-		modifiersField.setInt(obcClassPathField, obcClassPathField.getModifiers() & ~Modifier.FINAL);
-		obcClassPathField.set(null, "at.pcgamingfreaks.TestClasses.");
-		obcClassPathField.setAccessible(false);
-		modifiersField.setAccessible(false);
-		new OBCReflection();
-	}
+public class OBCReflectionTest {
+    @Test
+    public void testGetVersion() {
+        assertEquals("The version should match", "unknown", OBCReflection.getVersion());
+    }
 
-	@Test
-	public void testGetVersion()
-	{
-		assertEquals("The version should match", "unknown", OBCReflection.getVersion());
-	}
+    @Test
+    public void testGetClass() {
+        assertEquals("The OBC class should be correct", FakeTestBukkitServer.class, OBCReflection.getOBCClass("FakeTestBukkitServer"));
+        assertNull("The OBC class should not be found", OBCReflection.getOBCClass(""));
+    }
 
-	@Test
-	public void testGetClass()
-	{
-		assertEquals("The OBC class should be correct", FakeTestBukkitServer.class, OBCReflection.getOBCClass("FakeTestBukkitServer"));
-		assertNull("The OBC class should not be found", OBCReflection.getOBCClass(""));
-	}
+    @Test
+    public void testGetMethod() throws NoSuchMethodException {
+        assertEquals("The version method of the server should be found", FakeTestBukkitServer.class.getDeclaredMethod("getVersion"), OBCReflection.getOBCMethod("FakeTestBukkitServer", "getVersion"));
+        assertNull("The version method of the server should not be found in an invalid class", OBCReflection.getOBCMethod("", "getVersion"));
+    }
 
-	@Test
-	public void testGetMethod() throws NoSuchMethodException
-	{
-		assertEquals("The version method of the server should be found", FakeTestBukkitServer.class.getDeclaredMethod("getVersion"), OBCReflection.getOBCMethod("FakeTestBukkitServer", "getVersion"));
-		assertNull("The version method of the server should not be found in an invalid class", OBCReflection.getOBCMethod("", "getVersion"));
-	}
-
-	@Test
-	public void testGetField() throws NoSuchFieldException
-	{
-		assertEquals("The server field should be found", FakeTestBukkitServer.class.getDeclaredField("serverField"), OBCReflection.getOBCField("FakeTestBukkitServer", "serverField"));
-		assertNull("The server field should not be found in an invalid class", OBCReflection.getOBCField("", "serverField"));
-	}
+    @Test
+    public void testGetField() throws NoSuchFieldException {
+        assertEquals("The server field should be found", FakeTestBukkitServer.class.getDeclaredField("serverField"), OBCReflection.getOBCField("FakeTestBukkitServer", "serverField"));
+        assertNull("The server field should not be found in an invalid class", OBCReflection.getOBCField("", "serverField"));
+    }
 }

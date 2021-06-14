@@ -17,42 +17,45 @@
 
 package at.pcgamingfreaks.TestClasses;
 
+import org.mockito.internal.util.reflection.FieldSetter;
+
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class TestUtils
-{
-	private static Field modifiersField;
-	private static Map<String, Object> fields;
+public class TestUtils {
+    private static Map<String, Object> fields;
 
-	public static void initReflection() throws NoSuchFieldException
-	{
-		modifiersField = Field.class.getDeclaredField("modifiers");
-		modifiersField.setAccessible(true);
-		fields = new TreeMap<>();
-	}
+    public static void initReflection() {
+        fields = new TreeMap<>();
+    }
 
-	public static Field setAccessible(Class clazz, Object object, String name, Object value) throws NoSuchFieldException, IllegalAccessException
-	{
-		Field field = clazz.getDeclaredField(name);
-		field.setAccessible(true);
-		modifiersField.set(field, field.getModifiers() & ~Modifier.FINAL);
-		fields.put(name, field.get(object));
-		field.set(object, value);
-		return field;
-	}
+    public static Field setAccessible(Class clazz, Object object, String name, Object value) {
+        try {
+            Field field = clazz.getDeclaredField(name);
+            field.setAccessible(true);
+            FieldSetter.setField(object, field, value);
+            return field;
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
 
-	@SuppressWarnings("SpellCheckingInspection")
-	public static void setUnaccessible(Field field, Object object, boolean isFinal) throws IllegalAccessException
-	{
-		field.set(object, fields.get(field.getName()));
-		fields.remove(field.getName());
-		if (isFinal)
-		{
-			modifiersField.set(field, field.getModifiers() | Modifier.FINAL);
-		}
-		field.setAccessible(false);
-	}
+    public static void set(Field field, Object object, Object value) {
+        if (object == null && field != null) {
+            object = field.getClass();
+        }
+        FieldSetter.setField(object, field, value);
+    }
+
+    @SuppressWarnings("SpellCheckingInspection")
+    public static void setUnaccessible(Field field, Object object, boolean isFinal) {
+        try {
+            if (field != null && object != null) {
+                FieldSetter.setField(object, field, fields.get(field.getName()));
+                fields.remove(field.getName());
+                field.setAccessible(false);
+            }
+        } catch (Exception ignored) { }
+    }
 }

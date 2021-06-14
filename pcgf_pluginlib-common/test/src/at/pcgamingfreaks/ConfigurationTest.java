@@ -20,17 +20,11 @@ package at.pcgamingfreaks;
 import at.pcgamingfreaks.TestClasses.TestUtils;
 import at.pcgamingfreaks.yaml.YAML;
 import at.pcgamingfreaks.yaml.YamlKeyNotFoundException;
-
-import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.stubbing.Answer;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -44,8 +38,6 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ByteStreams.class, YamlFileManager.class, YamlFileUpdateMethod.class, YAML.class })
 public class ConfigurationTest
 {
 	private static Logger mockedLogger;

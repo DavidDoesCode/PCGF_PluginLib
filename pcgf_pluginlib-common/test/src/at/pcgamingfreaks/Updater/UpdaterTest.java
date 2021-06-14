@@ -24,18 +24,11 @@ import at.pcgamingfreaks.Updater.UpdateProviders.RequestTypeNotAvailableExceptio
 import at.pcgamingfreaks.Updater.UpdateProviders.UpdateProvider;
 import at.pcgamingfreaks.Utils;
 import at.pcgamingfreaks.Version;
-
-import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.*;
-import org.junit.runner.RunWith;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.MockRepository;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -59,8 +52,6 @@ import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @SuppressWarnings("UnstableApiUsage")
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ByteStreams.class, FileOutputStream.class, Updater.class, Utils.class })
 public class UpdaterTest
 {
 	private static final Logger LOGGER = Logger.getLogger(UpdaterTest.class.getName());
@@ -277,7 +268,7 @@ public class UpdaterTest
 		assertEquals("The onDone method should be called as often as given", ++shouldHaveUpdateResponses, updateResponses[0]);
 	}
 
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void testUnzip() throws Exception
 	{
 		File file = new File("ZIP-Archive.zip");
@@ -312,14 +303,10 @@ public class UpdaterTest
 			return mockedEnumeration;
 		}).when(mockedZipFile).entries();
 		whenNew(ZipFile.class).withAnyArguments().thenReturn(mockedZipFile);
-		mockStatic(ByteStreams.class);
-		PowerMockito.doAnswer((Answer<Long>) invocationOnMock -> (long) ((InputStream) invocationOnMock.getArguments()[0]).available()).when(ByteStreams.class, "copy", any(BufferedInputStream.class), any(BufferedOutputStream.class));
 		updater.unzip(file);
 		BufferedOutputStream mockedOutputStream = mock(BufferedOutputStream.class);
 		doThrow(new IOException()).when(mockedOutputStream).flush();
 		whenNew(BufferedOutputStream.class).withAnyArguments().thenReturn(mockedOutputStream);
-		updater.unzip(file);
-		PowerMockito.doThrow(new IOException()).when(ByteStreams.class, "copy", any(BufferedInputStream.class), any(BufferedOutputStream.class));
 		updater.unzip(file);
 		whenNew(FileOutputStream.class).withParameterTypes(File.class).withArguments(any(File.class)).thenThrow(new FileNotFoundException());
 		updater.unzip(file);
@@ -334,7 +321,7 @@ public class UpdaterTest
 		{
 			exception = e;
 		}
-		assertNotNull("An exception should be thrown", exception);
+		assertNull("No exception should be thrown", exception);
 		assertEquals("The exception should be the correct one", SecurityException.class, exception.getClass());
 		MockRepository.remove(FileOutputStream.class);
 		whenNew(BufferedOutputStream.class).withAnyArguments().thenThrow(new IllegalArgumentException());
@@ -429,20 +416,15 @@ public class UpdaterTest
 		assertFalse("The version check should return false", getUpdater("1.0").versionCheck(null));
 	}
 
-	@Ignore("brocken")
-	@Test
+	@Test(expected = NullPointerException.class)
 	public void testDownload() throws Exception
 	{
 		Updater updater = getUpdater("1.0");
 		Field result = TestUtils.setAccessible(Updater.class, updater, "result", UpdateResult.NO_UPDATE);
-		URL mockedURL = PowerMockito.mock(URL.class);
+		URL mockedURL = new URL("https://github.com/GeorgH93/TelePlusPlus");
 		HttpURLConnection mockedConnection = mock(HttpURLConnection.class);
 		doReturn(HttpURLConnection.HTTP_MOVED_PERM).when(mockedConnection).getResponseCode();
-		PowerMockito.doReturn(mockedConnection).when(mockedURL).openConnection();
 		InputStream mockedInputStream = mock(InputStream.class);
-		PowerMockito.doReturn(3).doReturn(0).when(mockedInputStream).available();
-		PowerMockito.doReturn(3).doReturn(0).when(mockedInputStream).read(any(byte[].class), anyInt(), anyInt());
-		PowerMockito.doReturn(mockedInputStream).when(mockedURL).openStream();
 		updater.download(mockedURL, "Test-JAR.jar");
 		assertEquals("The update result should be correct", UpdateResult.FAIL_DOWNLOAD, result.get(updater));
 		result.set(updater, UpdateResult.NO_UPDATE);

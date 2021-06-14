@@ -19,16 +19,11 @@ package at.pcgamingfreaks.Bukkit;
 
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
 import at.pcgamingfreaks.TestClasses.TestObjects;
-
 import org.bukkit.command.*;
 import org.bukkit.command.defaults.ReloadCommand;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -41,12 +36,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("SpellCheckingInspection")
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ PluginDescriptionFile.class })
 public class RegisterablePluginCommandTest
 {
-	@Before
-	public void prepareTestObjects()
+	@BeforeClass
+	public static void prepareTestData()
 	{
 		TestObjects.initMockedBukkitPlugin();
 	}
@@ -58,7 +51,7 @@ public class RegisterablePluginCommandTest
 		RegisterablePluginCommand pluginCommand = new RegisterablePluginCommand(plugin, "TestPlugin", "TestPlugin", "Test", "Plugin");
 		assertNotNull("The registerable plugin command should not be null", pluginCommand);
 		assertEquals("The plugin should be set correctly", plugin, pluginCommand.getPlugin());
-		assertEquals("The plugin command string should match", "at.pcgamingfreaks.Bukkit.RegisterablePluginCommand(TestPlugin, TestPlugin)", pluginCommand.toString());
+		assertEquals("The plugin command string should match", "at.pcgamingfreaks.Bukkit.RegisterablePluginCommand(TestPlugin, TestPlugin v1.0.0)", pluginCommand.toString());
 		pluginCommand.registerCommand();
 		pluginCommand.unregisterCommand();
 		TestBukkitServer server = new TestBukkitServer();

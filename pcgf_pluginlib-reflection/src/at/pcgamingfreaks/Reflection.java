@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -62,7 +61,7 @@ public class Reflection
 		{
 			return Class.forName(classPath);
 		}
-		catch(Exception ignroed) {}
+		catch(Exception ignored) {}
 		return null;
 	}
 
@@ -349,24 +348,5 @@ public class Reflection
 			if(l1[i] != l2[i]) return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Sets the value of an final field!
-	 *
-	 * @param field The final Field that should be set.
-	 * @param value The value that should be set.
-	 */
-	public static void setFinalField(final @NotNull Field field, final @Nullable Object instance, final @Nullable Object value) throws NoSuchFieldException, IllegalAccessException
-	{
-		Field modifiers = Field.class.getDeclaredField("modifiers");
-		modifiers.setAccessible(true);
-		boolean accessible = field.isAccessible();
-		field.setAccessible(true);
-		modifiers.set(field, field.getModifiers() & ~Modifier.FINAL);
-		field.set(instance, value);
-		modifiers.set(field, field.getModifiers() | Modifier.FINAL);
-		field.setAccessible(accessible);
-		modifiers.setAccessible(false);
 	}
 }

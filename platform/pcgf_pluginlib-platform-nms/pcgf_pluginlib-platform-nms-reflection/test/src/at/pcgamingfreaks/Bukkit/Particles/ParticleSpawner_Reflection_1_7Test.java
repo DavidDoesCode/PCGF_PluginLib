@@ -17,13 +17,10 @@
 
 package at.pcgamingfreaks.Bukkit.Particles;
 
-import at.pcgamingfreaks.Bukkit.NMSReflection;
 import at.pcgamingfreaks.Bukkit.Util.IUtils;
-import at.pcgamingfreaks.Reflection;
 import at.pcgamingfreaks.TestClasses.TestBukkitPlayer;
 import at.pcgamingfreaks.TestClasses.TestBukkitServer;
-import at.pcgamingfreaks.TestClasses.TestObjects;
-
+import at.pcgamingfreaks.TestClasses.TestUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -32,9 +29,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -43,8 +37,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ NMSReflection.class })
 public class ParticleSpawner_Reflection_1_7Test
 {
 	IUtils mockedUtils = null;
@@ -52,8 +44,10 @@ public class ParticleSpawner_Reflection_1_7Test
 	@BeforeClass
 	public static void prepareTestData() throws NoSuchFieldException, IllegalAccessException
 	{
-		Bukkit.setServer(new TestBukkitServer());
-		TestObjects.initNMSReflection();
+		if (Bukkit.getServer() == null) {
+			Bukkit.setServer(new TestBukkitServer());
+		}
+		//TestObjects.initNMSReflection();
 	}
 
 	@Before
@@ -61,14 +55,14 @@ public class ParticleSpawner_Reflection_1_7Test
 	{
 		mockedUtils = mock(IUtils.class);
 		doNothing().when(mockedUtils).sendPacket(any(Player.class), any());
-		Reflection.setFinalField(IUtils.class.getDeclaredField("INSTANCE"), null, mockedUtils);
+		TestUtils.setAccessible(IUtils.class, null, "INSTANCE", mockedUtils);
 	}
 
 	@After
 	public void cleanupTestObjects() throws NoSuchFieldException, IllegalAccessException
 	{
 		mockedUtils = null;
-		Reflection.setFinalField(IUtils.class.getDeclaredField("INSTANCE"), null, null);
+		TestUtils.setAccessible(IUtils.class, null, "INSTANCE", null);
 	}
 
 	@Test
