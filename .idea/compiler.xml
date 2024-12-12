@@ -14,6 +14,7 @@
         <module name="pcgf_pluginlib-reflection-obc" />
         <module name="pcgf_pluginlib-version" />
         <module name="pcgf_pluginlib-version_detection" />
+        <module name="pcgf_pluginlib-platform-nms-1_17_R1 (2)" />
         <module name="pcgf_pluginlib-platform-nms-1_19_R3" />
         <module name="pcgf_pluginlib-plugin-bukkit" />
         <module name="pcgf_pluginlib-servertype" />
@@ -26,6 +27,7 @@
         <module name="pcgf_pluginlib-platform-nms-1_20_R3" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R2" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R4" />
+        <module name="pcgf_pluginlib-platform-nms-1_21_R1_Paper" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R1" />
         <module name="pcgf_pluginlib-platform-nms-1_20_R4_Paper" />
         <module name="pcgf_pluginlib-platform-nms-1_19_R1_1" />
@@ -35,6 +37,7 @@
         <module name="pcgf_pluginlib-placeholder_api_wrapper" />
         <module name="IMessage" />
         <module name="pcgf_pluginlib-base" />
+        <module name="PluginLib" />
         <module name="pcgf_pluginlib-plugin" />
         <module name="pcgf_pluginlib-platform-nms-1_18_R1" />
         <module name="pcgf_pluginlib-reflection" />
@@ -47,9 +50,16 @@
         <module name="pcgf_pluginlib-platform-nms-1_21_R1" />
         <module name="pcgf_pluginlib-uuid" />
       </profile>
+      <profile name="Annotation profile for PCGF PluginLib - Parent" enabled="true">
+        <sourceOutputDir name="../pcgf_pluginlib-platform-nms_mm-1_17_R1/target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../pcgf_pluginlib-platform-nms_mm-1_17_R1/target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="pcgf_pluginlib-platform-nms-1_17_R1 (1)" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="PluginLib" target="1.5" />
+      <module name="pcgf_pluginlib-platform-nms-1_21_R2" target="21" />
+      <module name="pcgf_pluginlib-platform-nms-1_21_R2_Paper" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>
